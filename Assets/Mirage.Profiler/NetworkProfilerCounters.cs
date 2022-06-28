@@ -1,14 +1,11 @@
 using System.Collections.Generic;
+using Mirror;
 using Unity.Profiling;
-using Unity.Profiling.Editor;
-using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Mirage.NetworkProfiler
 {
-
     public class Names
     {
         internal const string INTERNAL_FRAME_COUNTER = "INTERNAL_FRAME_COUNTER";
@@ -52,16 +49,14 @@ namespace Mirage.NetworkProfiler
     {
         readonly ProfilerCounter<int> profilerCount;
         readonly ProfilerCounter<int> profilerBytes;
-        readonly object instance;
         internal readonly Frame[] frames;
 
         int count;
         int bytes;
 
 
-        public CountRecorder(int bufferSize, object instance, ProfilerCounter<int> profilerCount, ProfilerCounter<int> profilerBytes)
+        public CountRecorder(int bufferSize, ProfilerCounter<int> profilerCount, ProfilerCounter<int> profilerBytes)
         {
-            this.instance = instance;
             this.profilerCount = profilerCount;
             this.profilerBytes = profilerBytes;
             frames = new Frame[bufferSize];

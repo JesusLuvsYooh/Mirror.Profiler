@@ -1,9 +1,13 @@
+//#undef UNITY_EDITOR
 #if UNITY_EDITOR
+using System.Collections.Generic;
+using Mirror;
 using Unity.Profiling;
+using UnityEngine;
+using UnityEngine.UIElements;
 using Unity.Profiling.Editor;
 using UnityEditor;
 using UnityEditorInternal;
-using UnityEngine.UIElements;
 
 namespace Mirage.NetworkProfiler.ModuleGUI
 {
@@ -44,7 +48,7 @@ namespace Mirage.NetworkProfiler.ModuleGUI
         // Override CreateView to build the custom module details panel.
         protected override VisualElement CreateView()
         {
-            var root = new VisualElement();
+            VisualElement root = new VisualElement();
             VisualElement dataView = CreateDataView();
 
             messageView = AddMessageView();
@@ -69,7 +73,7 @@ namespace Mirage.NetworkProfiler.ModuleGUI
 
         private VisualElement CreateDataView()
         {
-            var dataView = new VisualElement();
+            VisualElement dataView = new VisualElement();
             PlayerCount = AddLabelWithPadding(dataView);
             MessagesSentCount = AddLabelWithPadding(dataView);
             MessagesSentBytes = AddLabelWithPadding(dataView);
@@ -85,7 +89,7 @@ namespace Mirage.NetworkProfiler.ModuleGUI
 
         static Label AddLabelWithPadding(VisualElement view)
         {
-            var label = new Label() { style = { paddingTop = 8, paddingLeft = 8 } };
+            Label label = new Label() { style = { paddingTop = 8, paddingLeft = 8 } };
             view.Add(label);
             return label;
         }
@@ -148,7 +152,7 @@ namespace Mirage.NetworkProfiler.ModuleGUI
 
             if (count == 0)
             {
-                var label = new Label() { style = { paddingTop = 8, paddingLeft = 8 } };
+                Label label = new Label() { style = { paddingTop = 8, paddingLeft = 8 } };
                 messageView.Add(label);
                 label.text = $"No messages";
                 return;
@@ -156,7 +160,7 @@ namespace Mirage.NetworkProfiler.ModuleGUI
 
             foreach (NetworkDiagnostics.MessageInfo message in frame.Messages)
             {
-                var label = new Label() { style = { paddingTop = 8, paddingLeft = 8 } };
+                Label label = new Label() { style = { paddingTop = 8, paddingLeft = 8 } };
                 messageView.Add(label);
                 string text = CreateTextForMessageInfo(message);
                 label.text = text;
@@ -177,17 +181,16 @@ namespace Mirage.NetworkProfiler.ModuleGUI
                 netid = rpc1.netId;
                 compIndex = rpc1.componentIndex;
             }
-            if (message.message is ServerRpcMessage rpc2)
+            if (message.message is CommandMessage rpc2)
             {
                 netid = rpc2.netId;
                 compIndex = rpc2.componentIndex;
             }
-            if (message.message is ServerRpcWithReplyMessage rpc3)
+            if (message.message is SpawnMessage spawn)
             {
-                netid = rpc3.netId;
-                compIndex = rpc3.componentIndex;
+                netid = spawn.netId;
             }
-            if (message.message is UpdateVarsMessage vars)
+            if (message.message is EntityStateMessage vars)
             {
                 netid = vars.netId;
             }
